@@ -9,6 +9,7 @@ public class SceneManager : MonoBehaviour
     private Player playerPrefab;
     [SerializeField]
     private TextMeshProUGUI countdown;
+   
 
     private CoroutineQueue actions;
     public delegate void SceneEvent();
@@ -37,7 +38,7 @@ public class SceneManager : MonoBehaviour
     }
     IEnumerator PrepareSceneAction()
     {
-        Instantiate(playerPrefab);
+        Map.singleton.SpawnPlayer(playerPrefab);
         yield return new WaitUntil(() => playerReady && EnemyPoolManager.singleton.IsReady);
         yield return new WaitForEndOfFrame();
         actions.EnqueueAction(StartGame(), "StartGame");
@@ -105,3 +106,4 @@ public class SceneManager : MonoBehaviour
         actions.StopLoop();
     }
 }
+

@@ -8,22 +8,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float speed;
 
+    [SerializeField]
+    private Rigidbody2D rigidBody;
+
     private Vector2 input;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized ;
     }
 
     private void FixedUpdate()
     {
-        transform.Translate(input * speed * Time.fixedDeltaTime);
+        rigidBody.velocity = input * speed;
     }
 }

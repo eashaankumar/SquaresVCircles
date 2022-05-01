@@ -42,3 +42,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Map
+    uniqueID: 1085968551
+    locked: 0
+  - name: Actor
+    uniqueID: 414360633
+    locked: 0
