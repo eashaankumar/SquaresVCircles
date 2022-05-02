@@ -6,8 +6,6 @@ using TMPro;
 public class SceneManager : MonoBehaviour
 {
     [SerializeField]
-    private Player playerPrefab;
-    [SerializeField]
     private TextMeshProUGUI countdown;
    
 
@@ -17,41 +15,16 @@ public class SceneManager : MonoBehaviour
 
     public static SceneManager singleton;
 
-    private bool playerReady = false;
-    public bool PlayerReady
-    {
-        set
-        {
-            playerReady = value;
-        }
-    }
 
 
     #region Actions
-    IEnumerator PrepareSceneManager()
-    {
-        // clear delegates
-        startGame = null;
-        actions.EnqueueAction(PrepareSceneAction(), "PrepareSceneAction");
-        yield return CoroutineQueueResult.PASS;
-        yield break;
-    }
     IEnumerator PrepareSceneAction()
     {
-        Map.singleton.SpawnPlayer(playerPrefab);
-        yield return new WaitUntil(() => playerReady && EnemyPoolManager.singleton.IsReady);
+        startGame = null;
+        Map.singleton.PrepareMap();
+        yield return new WaitUntil(() => Map.singleton.IsReady);
         yield return new WaitForEndOfFrame();
-        actions.EnqueueAction(StartGame(), "StartGame");
-        yield return CoroutineQueueResult.PASS;
-        yield break;
-    }
-
-
-    IEnumerator StartGame()
-    {
-        string[] subsriberCount = { "Player", "Enemy Pool Manager" };
-        yield return new WaitUntil(() => startGame.GetInvocationList().Length == subsriberCount.Length);
-        for(int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             countdown.text = (3 - i) + "";
             yield return new WaitForSecondsRealtime(1);
@@ -60,6 +33,7 @@ public class SceneManager : MonoBehaviour
         Debug.Log("Start game");
         startGame();
         yield return CoroutineQueueResult.PASS;
+        yield break;
     }
 
     IEnumerator TrackGame()
@@ -90,10 +64,10 @@ public class SceneManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        actions.EnqueueAction(PrepareSceneManager(), "PrepareSceneManager");
+        actions.EnqueueAction(PrepareSceneAction(), "PrepareSceneAction");
     }
 
-    
+
 
     // Update is called once per frame
     void Update()
