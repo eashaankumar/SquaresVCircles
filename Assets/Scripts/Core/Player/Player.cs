@@ -8,12 +8,23 @@ public class Player : MonoBehaviour
     private CoroutineQueue actions;
     private PlayerController controller;
 
-    #region Actions
-    IEnumerator PreparePlayer()
+    private bool isReady = false;
+    public bool IsReady
     {
+        get
+        {
+            return isReady;
+        }
+    }
+
+    #region Actions
+    IEnumerator Prepare()
+    {
+        isReady = false;
         controller.enabled = false;
         SceneManager.singleton.SubscribeStartGame(OnStartGame);
-        SceneManager.singleton.PlayerReady = true;
+        isReady = true;
+        Debug.Log("Player is Ready");
         yield return CoroutineQueueResult.PASS;
         yield break;
     }
@@ -27,6 +38,13 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+    #region public methods
+    public void PreparePlayer()
+    {
+        actions.EnqueueAction(Prepare(), "PreparePlayer");
+    }
+    #endregion
+
     private void Awake()
     {
         actions = new CoroutineQueue(this);
@@ -37,7 +55,6 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        actions.EnqueueAction(PreparePlayer(), "PreparePlayer");
     }
 
     // Update is called once per frame
